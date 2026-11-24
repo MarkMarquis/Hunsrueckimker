@@ -1,0 +1,107 @@
+# Lädt die Webseite per SFTP auf den Webspace.
+#
+# Start: GitHub → Actions → „Deploy (SFTP)“ → „Run workflow“
+#
+# Benötigte Secrets (Settings → Secrets and variables → Actions → Secrets):
+#   FTP_SERVER    Servername, z. B. ssh.meinhoster.de (ohne sftp://)
+#   FTP_USERNAME  SFTP-Benutzer
+#   FTP_PASSWORD  SFTP-Passwort
+#   FTP_PORT      optional, Standard 22
+#
+# Optional als Variable (… → Actions → Variables):
+#   SFTP_REMOTE_DIR  Zielordner auf dem Server, z. B. /httpdocs
+#
+# Auf dem Server wird nichts gelöscht. Datenbank (data/*.sqlite), hochgeladene
+# Bilder (public/uploads/) und config/config.local.php sind nicht im Repository
+# und werden daher nie überschrieben.
+
+name: Deploy (SFTP)
+
+on:
+  workflow_dispatch:
+    inputs:
+      remote_dir:
+        description: 'Zielordner auf dem Server (leer = Variable SFTP_REMOTE_DIR bzw. Startordner)'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Nur testen – anzeigen, was hochgeladen würde'
+        type: boolean
+        default: true
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: PHP-Abhängigkeiten installieren (Smarty)
+        run: composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+
+      - name: Syntax-Prüfung
+        run: find src public config -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
+
+      - name: lftp installieren
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Per SFTP hochladen
+        env:
+          SFTP_HOST: ${{ secrets.FTP_SERVER }}
+          SFTP_USER: ${{ secrets.FTP_USERNAME }}
+          LFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          SFTP_PORT: ${{ secrets.FTP_PORT }}
+          REMOTE_DIR: ${{ inputs.remote_dir || vars.SFTP_REMOTE_DIR || '.' }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          if [ -z "$SFTP_HOST" ] || [ -z "$SFTP_USER" ] || [ -z "$LFTP_PASSWORD" ]; then
+            echo "::error::Secrets FTP_SERVER, FTP_USERNAME und FTP_PASSWORD müssen gesetzt sein."
+            exit 1
+          fi
+          DRY=""
+          if [ "$DRY_RUN" = "true" ]; then
+            DRY="--dry-run"
+            echo "Testlauf: Es wird nichts hochgeladen."
+          fi
+          echo "Ziel: sftp://${SFTP_HOST}:${SFTP_PORT:-22} → ${REMOTE_DIR}"
+
+          lftp --env-password -u "$SFTP_USER" -p "${SFTP_PORT:-22}" "sftp://$SFTP_HOST" <<LFTP
+          set sftp:auto-confirm yes
+          set net:max-retries 3
+          set net:timeout 30
+          set cmd:fail-exit yes
+          mirror --reverse --verbose --parallel=4 $DRY \
+            --exclude '^\.git/' \
+            --exclude '^\.github/' \
+            --exclude '^\.gitignore$' \
+            ./ "$REMOTE_DIR"
+          bye
+          LFTP
+
+          # Kontrolle: Sind alle benötigten Ordner und Dateien auf dem Server angekommen?
+          if [ "$DRY_RUN" != "true" ]; then
+            echo "Prüfe Upload …"
+            MISSING=0
+            for path in config data public src templates var vendor vendor/autoload.php public/index.php public/boot.php; do
+              if lftp --env-password -u "$SFTP_USER" -p "${SFTP_PORT:-22}" "sftp://$SFTP_HOST" \
+                   -e "set sftp:auto-confirm yes; set cmd:fail-exit yes; cls -d \"$REMOTE_DIR/$path\"; bye" > /dev/null 2>&1; then
+                echo "  ok      $path"
+              else
+                echo "::error::Fehlt auf dem Server: $REMOTE_DIR/$path"
+                MISSING=1
+              fi
+            done
+            if [ "$MISSING" = "1" ]; then
+              echo "::error::Der Upload ist unvollständig. Bitte das Protokoll oben auf Fehlermeldungen prüfen und den Workflow erneut starten."
+              exit 1
+            fi
+            echo "Upload vollständig."
+          fi

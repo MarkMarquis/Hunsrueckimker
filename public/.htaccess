@@ -1,0 +1,32 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# Eigene Umschreib-Engine: Damit gelten in diesem Ordner NUR diese Regeln.
+# Regeln aus .htaccess-Dateien übergeordneter Ordner werden dadurch nicht mehr angewendet.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Unverschlüsselte Aufrufe immer auf https:// umleiten
+    # (X-Forwarded-Proto: falls ein vorgeschalteter Proxy die Verschlüsselung übernimmt)
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+    # Optional: Hauptadresse ohne „www“ auf https://www. umleiten (Domain eintragen und Rauten entfernen)
+    # RewriteCond %{HTTP_HOST} ^ihre-domain\.de$ [NC]
+    # RewriteRule ^ https://www.ihre-domain.de%{REQUEST_URI} [R=301,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "same-origin"
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType text/css "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+</IfModule>

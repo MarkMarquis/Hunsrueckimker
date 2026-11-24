@@ -1,0 +1,12 @@
+/vendor/
+/data/*.sqlite
+/data/*.sqlite-*
+/var/templates_c/*
+/var/cache/*
+!/var/templates_c/.gitkeep
+!/var/cache/.gitkeep
+/public/uploads/*
+!/public/uploads/.gitkeep
+!/public/uploads/.htaccess
+/config/config.local.php
+.DS_Store
