@@ -11,12 +11,12 @@ final class MenuRepository
 
     public const SECTIONS = [
         'highlight' => 'Highlight-Bereich',
-        'menu'   => 'Speisekarte',
+        'menu'   => 'Honigsorten',
     ];
 
     /**
-     * Kategorien inkl. Gerichten.
-     * $onlyActive = nur sichtbare Gerichte (Frontend), $section = nur ein Bereich.
+     * Kategorien inkl. Sorten.
+     * $onlyActive = nur sichtbare Sorten (Frontend), $section = nur ein Bereich.
      */
     public function tree(bool $onlyActive = true, ?string $section = null): array
     {
@@ -88,18 +88,19 @@ final class MenuRepository
         $params = [
             $d['category_id'], $d['name'], $d['description'], $d['price_cents'], $d['portion'],
             json_encode($d['variants'], JSON_UNESCAPED_UNICODE), $d['allergens'], $d['tags'], $d['active'], $d['sort_order'],
+            $d['image'] ?? '',
         ];
         if ($id) {
             $params[] = $id;
             $this->db->prepare(
                 'UPDATE menu_items SET category_id = ?, name = ?, description = ?, price_cents = ?, portion = ?,
-                 variants = ?, allergens = ?, tags = ?, active = ?, sort_order = ? WHERE id = ?'
+                 variants = ?, allergens = ?, tags = ?, active = ?, sort_order = ?, image = ? WHERE id = ?'
             )->execute($params);
             return $id;
         }
         $this->db->prepare(
-            'INSERT INTO menu_items (category_id, name, description, price_cents, portion, variants, allergens, tags, active, sort_order)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO menu_items (category_id, name, description, price_cents, portion, variants, allergens, tags, active, sort_order, image)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         )->execute($params);
         return (int) $this->db->lastInsertId();
     }

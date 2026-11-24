@@ -1,10 +1,10 @@
 {extends file="admin/layout.tpl"}
-{block name=title}Gericht{/block}
+{block name=title}Sorte{/block}
 {block name=content}
-<p><a href="index.php?page=menu">&larr; Zurück zur Speisekarte</a></p>
-<h1>{if $id}Gericht bearbeiten{else}Neues Gericht{/if}</h1>
+<p><a href="index.php?page=menu">&larr; Zurück zu den Honigsorten</a></p>
+<h1>{if $id}Sorte bearbeiten{else}Neue Sorte{/if}</h1>
 {include file="admin/_errors.tpl"}
-<form method="post" action="index.php?page=item_edit{if $id}&amp;id={$id}{/if}" class="card form">
+<form method="post" action="index.php?page=item_edit{if $id}&amp;id={$id}{/if}" class="card form" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{$csrf_token}">
     <div class="grid-2">
         <label class="field">Name
@@ -57,6 +57,15 @@
         </template>
         <button type="button" class="btn btn-small" id="add-variant">+ Weitere Portionsgröße</button>
     </fieldset>
+    <div class="field">
+        <span>Foto <small>(optional, z. B. das Glas)</small></span>
+        <div class="image-preview" data-preview="image">
+            {if $item.image|default:''}<img src="{$item.image|item_image:'../'}" alt="">{else}<span class="muted small">Kein Foto</span>{/if}
+        </div>
+        <input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" data-preview-target="image">
+        {if $item.image|default:''}<label class="check"><input type="checkbox" name="remove_image" value="1"> Foto entfernen</label>{/if}
+    </div>
+    <p class="muted small">Preis 0,00 € = auf der Webseite wird kein Preis angezeigt.</p>
     <div class="grid-2">
         <label class="field">Allergene / Zusatzstoffe <small>(Kennzeichnung, z. B. „12, G“)</small>
             <input type="text" name="allergens" value="{$item.allergens}" maxlength="100">

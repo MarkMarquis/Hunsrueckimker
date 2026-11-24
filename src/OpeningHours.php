@@ -29,15 +29,15 @@ final class OpeningHours
     /** Version der Standard-Wochenzeiten (für die automatische Aktualisierung bestehender Installationen) */
     public const WEEK_VERSION = 2;
 
-    /** Standard: Mo, Di, So 11–22 Uhr; Fr, Sa 11–23 Uhr; Mi + Do Ruhetag */
+    /** Standard-Verkaufszeiten: Mo–Do ab 18 Uhr, Fr–So ganztags (ohne Uhrzeit) */
     public static function defaultWeek(): array
     {
         $week = [];
         foreach (self::DAYS as $d => $name) {
             $week[$d] = [
-                'closed' => in_array($d, [3, 4], true),
-                'open'   => '11:00',
-                'close'  => in_array($d, [5, 6], true) ? '23:00' : '22:00',
+                'closed' => false,
+                'open'   => $d <= 4 ? '18:00' : '',
+                'close'  => '',
             ];
         }
         return $week;
@@ -95,7 +95,7 @@ final class OpeningHours
     public static function span(string $open, string $close): string
     {
         if ($open === '' && $close === '') {
-            return 'geöffnet';
+            return 'ganztags';
         }
         if ($close === '') {
             return 'ab ' . $open . ' Uhr';
@@ -113,7 +113,7 @@ final class OpeningHours
         $todayDow = (int) $today->format('N');
         $rows = [];
         foreach ($this->week() as $d => $w) {
-            $text = $w['closed'] ? 'Ruhetag' : self::span($w['open'], $w['close']);
+            $text = $w['closed'] ? 'kein Verkauf' : self::span($w['open'], $w['close']);
             $last = count($rows) - 1;
             if ($last >= 0 && $rows[$last]['text'] === $text && $rows[$last]['to'] === $d - 1) {
                 $rows[$last]['to'] = $d;
@@ -193,7 +193,7 @@ final class OpeningHours
         }
         $w = $this->week()[(int) $today->format('N')];
         return $w['closed']
-            ? ['closed' => true, 'text' => 'Heute Ruhetag']
+            ? ['closed' => true, 'text' => 'Heute kein Verkauf']
             : ['closed' => false, 'text' => 'Heute ' . self::span($w['open'], $w['close']) . ' geöffnet'];
     }
 

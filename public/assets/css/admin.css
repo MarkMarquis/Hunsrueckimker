@@ -5,8 +5,8 @@
     --ink: #1f1c18;
     --muted: #776e62;
     --line: #e2dbcf;
-    --accent: #8a1f1d;
-    --accent-dark: #6c1614;
+    --accent: #a85a06;
+    --accent-dark: #864805;
     --success: #2f6b3a;
     --error: #a12622;
     --radius: 6px;
@@ -68,7 +68,7 @@ h2 { font-size: 1.25rem; margin: 0 0 14px; }
     background: #fdfcfa; border: 1px solid #cfc6b6; border-radius: var(--radius);
 }
 .field textarea { resize: vertical; line-height: 1.5; }
-.field input:focus, .field select:focus, .field textarea:focus, .variant-row input:focus { outline: 2px solid rgba(138,31,29,.25); border-color: var(--accent); }
+.field input:focus, .field select:focus, .field textarea:focus, .variant-row input:focus { outline: 2px solid rgba(168,90,6,.25); border-color: var(--accent); }
 .field input[type=file] { display: block; margin-top: 8px; font-size: .85rem; max-width: 100%; }
 .check { display: flex; align-items: center; gap: 8px; font-weight: 400; margin: 6px 0; font-size: .9rem; }
 .check input { accent-color: var(--accent); }

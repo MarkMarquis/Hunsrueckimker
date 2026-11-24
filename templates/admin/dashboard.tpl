@@ -5,7 +5,7 @@
 <div class="stats">
     <a class="stat" href="index.php?page=news"><strong>{$news_count}</strong><span>News-Einträge</span></a>
     <a class="stat" href="index.php?page=menu"><strong>{$cat_count}</strong><span>Kategorien</span></a>
-    <a class="stat" href="index.php?page=menu"><strong>{$item_count}</strong><span>Gerichte</span></a>
+    <a class="stat" href="index.php?page=menu"><strong>{$item_count}</strong><span>Sorten</span></a>
     <a class="stat{if $unread_count} stat--hot{/if}" href="index.php?page=messages"><strong>{$unread_count}</strong><span>Ungelesene Nachrichten</span></a>
 </div>
 
@@ -14,7 +14,7 @@
         <h2>Schnellzugriff</h2>
         <ul class="quick">
             <li><a href="index.php?page=news_edit">+ Neue Neuigkeit schreiben</a></li>
-            <li><a href="index.php?page=item_edit">+ Neues Gericht anlegen</a></li>
+            <li><a href="index.php?page=item_edit">+ Neue Sorte anlegen</a></li>
             <li><a href="index.php?page=settings">Öffnungszeiten &amp; Kontaktdaten ändern</a></li>
             <li><a href="index.php?page=settings#bilder">Logo &amp; Banner austauschen</a></li>
         </ul>

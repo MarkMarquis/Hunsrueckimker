@@ -61,7 +61,7 @@
 
     <section class="card">
         <h2>Highlight-Bereich</h2>
-        <p class="muted small">Die Gerichte in diesem Bereich pflegen Sie unter <a href="index.php?page=menu">Speisekarte</a> (Kategorien mit Bereich „Highlight-Bereich“).</p>
+        <p class="muted small">Die Sorten in diesem Bereich pflegen Sie unter <a href="index.php?page=menu">Honigsorten</a> (Kategorien mit Bereich „Highlight-Bereich“; meist leer lassen).</p>
         <label class="field">Überschrift
             <input type="text" name="highlight_title" value="{$site.highlight_title|default:''}">
         </label>
@@ -71,11 +71,14 @@
     </section>
 
     <section class="card">
-        <h2>Hinweise zur Speisekarte</h2>
-        <label class="field">Hinweis unter der Speisekarte <small>(z. B. Kinderportionen, Preisangabe)</small>
+        <h2>Honigsorten</h2>
+        <label class="field">Überschrift des Bereichs
+            <input type="text" name="menu_title" value="{$site.menu_title|default:''}" maxlength="100" placeholder="Unsere Honige">
+        </label>
+        <label class="field">Hinweis unter den Sorten <small>(z. B. Glasgröße, Rabatt, Preisangabe)</small>
             <textarea name="menu_note" rows="4">{$site.menu_note|default:''}</textarea>
         </label>
-        <label class="field">Legende Allergene &amp; Zusatzstoffe
+        <label class="field">Legende Kennzeichnungen <small>(leer = ausgeblendet)</small>
             <textarea name="allergen_legend" rows="7">{$site.allergen_legend|default:''}</textarea>
         </label>
     </section>
@@ -106,7 +109,7 @@
     </section>
 
     <section class="card" id="formulartexte">
-        <h2>Texte im Kontakt- &amp; Reservierungsformular</h2>
+        <h2>Texte im Kontakt- &amp; Bestellformular</h2>
         <p class="muted small">Leere Felder werden auf der Webseite ausgeblendet (außer Überschriften und Einwilligung – dort wird dann der Standardtext verwendet).</p>
         <div class="grid-2">
             <label class="field">Überschrift des Bereichs
@@ -119,7 +122,7 @@
         <label class="field">Einleitungstext über dem Formular
             <textarea name="form_intro" rows="2" maxlength="500">{$site.form_intro|default:''}</textarea>
         </label>
-        <label class="field">Hinweis bei Reservierungen <small>(erscheint unter Datum, Personen und Bereich)</small>
+        <label class="field">Hinweis bei Bestellungen <small>(erscheint unter Lieferart, Anzahl und Wunschtermin)</small>
             <textarea name="form_res_note" rows="3" maxlength="800">{$site.form_res_note|default:''}</textarea>
         </label>
         <label class="field">Text der Datenschutz-Einwilligung <small>(Häkchen vor dem Absenden)</small>
@@ -132,7 +135,7 @@
             <label class="field">Bestätigung nach einer Anfrage
                 <textarea name="form_success" rows="3" maxlength="500">{$site.form_success|default:''}</textarea>
             </label>
-            <label class="field">Bestätigung nach einer Reservierungsanfrage
+            <label class="field">Bestätigung nach einer Bestellung
                 <textarea name="form_success_res" rows="3" maxlength="500">{$site.form_success_res|default:''}</textarea>
             </label>
         </div>

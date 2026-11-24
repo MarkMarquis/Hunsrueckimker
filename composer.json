@@ -1,6 +1,6 @@
 {
-    "name": "website/vorlage",
-    "description": "Onepager-Webseiten-Vorlage mit Backend (PHP, Smarty, SQLite)",
+    "name": "hunsrueck-imker/website",
+    "description": "Webseite Der Hunsrück-Imker mit Backend (PHP, Smarty, SQLite)",
     "type": "project",
     "license": "proprietary",
     "require": {

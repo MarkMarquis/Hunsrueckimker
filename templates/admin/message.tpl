@@ -12,14 +12,13 @@
     </dl>
     {if $msg.type == 'reservierung'}
     <div class="reservation-box">
-        <h2><span class="pill pill--res">Reservierungsanfrage</span></h2>
+        <h2><span class="pill pill--res">Honigbestellung</span></h2>
         <dl class="meta">
-            <dt>Datum</dt><dd><strong>{$msg.res_date|weekday_de}, {$msg.res_date|date_de}</strong></dd>
-            <dt>Uhrzeit</dt><dd><strong>{$msg.res_time} Uhr</strong></dd>
-            <dt>Personen</dt><dd><strong>{$msg.persons}</strong></dd>
-            <dt>Bereich</dt><dd>{$msg.area|area_label|default:'Keine Präferenz'}</dd>
+            <dt>Lieferart</dt><dd><strong>{$msg.area|area_label|default:'Abholung'}</strong></dd>
+            <dt>Gläser</dt><dd><strong>{if $msg.persons}{$msg.persons}{else}–{/if}</strong></dd>
+            <dt>Wunschtermin</dt><dd>{if $msg.res_date}{$msg.res_date|weekday_de}, {$msg.res_date|date_de}{else}–{/if}</dd>
         </dl>
-        <p class="muted small">Bitte Verfügbarkeit prüfen und dem Gast per E-Mail{if $msg.phone} oder Telefon{/if} bestätigen oder absagen.</p>
+        <p class="muted small">Die Bestellung steht unten im Nachrichtentext. Bitte Verfügbarkeit prüfen und dem Kunden per E-Mail{if $msg.phone} oder Telefon{/if} antworten.</p>
     </div>
     {/if}
     {if $msg.mail_error|default:''}

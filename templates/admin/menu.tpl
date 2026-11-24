@@ -1,14 +1,14 @@
 {extends file="admin/layout.tpl"}
-{block name=title}Speisekarte{/block}
+{block name=title}Honigsorten{/block}
 {block name=content}
 <div class="page-head">
-    <h1>Speisekarte &amp; Highlights</h1>
+    <h1>Honigsorten</h1>
     <div>
         <a class="btn" href="index.php?page=category_edit">+ Kategorie</a>
-        <a class="btn btn-primary" href="index.php?page=item_edit">+ Gericht</a>
+        <a class="btn btn-primary" href="index.php?page=item_edit">+ Sorte</a>
     </div>
 </div>
-<p class="muted small">Tipp: Kategorien und Gerichte lassen sich mit dem Griff ⠿ per Drag &amp; Drop sortieren. Mit dem Schalter blenden Sie ein Gericht vorübergehend aus.</p>
+<p class="muted small">Tipp: Kategorien und Sorten lassen sich mit dem Griff ⠿ per Drag &amp; Drop sortieren. Mit dem Schalter blenden Sie ein Gericht vorübergehend aus.</p>
 
 {if !$categories}
     <div class="card"><p class="muted">Noch keine Kategorien. Legen Sie zuerst eine Kategorie an.</p></div>
@@ -28,10 +28,10 @@
                 {if $cat.description}<p class="muted small">{$cat.description}</p>{/if}
             </div>
             <div class="actions">
-                <a class="btn btn-small" href="index.php?page=item_edit&amp;category={$cat.id}">+ Gericht</a>
+                <a class="btn btn-small" href="index.php?page=item_edit&amp;category={$cat.id}">+ Sorte</a>
                 <a class="btn btn-small" href="index.php?page=category_edit&amp;id={$cat.id}">Bearbeiten</a>
                 <form method="post" action="index.php?page=category_delete" class="inline"
-                      data-confirm="Kategorie „{$cat.name}“ mit allen {count($cat.items)} Gerichten löschen?">
+                      data-confirm="Kategorie „{$cat.name}“ mit allen {count($cat.items)} Sorten löschen?">
                     <input type="hidden" name="csrf_token" value="{$csrf_token}">
                     <input type="hidden" name="id" value="{$cat.id}">
                     <button class="btn btn-small btn-danger" type="submit">Löschen</button>
@@ -62,7 +62,7 @@
             {/foreach}
         </ul>
         {else}
-            <p class="muted small">Keine Gerichte in dieser Kategorie.</p>
+            <p class="muted small">Keine Sorten in dieser Kategorie.</p>
         {/if}
     </section>
 {/if}{/foreach}

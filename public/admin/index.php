@@ -282,7 +282,7 @@ try {
             }
             redirect('news');
 
-        // ----- Speisekarte ----------------------------------------------------
+        // ----- Honigsorten ----------------------------------------------------
         case 'menu':
             $app->render('admin/menu.tpl', [
                 'sections'   => MenuRepository::SECTIONS,
@@ -324,7 +324,7 @@ try {
         case 'category_delete':
             if ($isPost) {
                 $app->menu->deleteCategory((int) ($_POST['id'] ?? 0));
-                Flash::add('success', 'Die Kategorie und ihre Gerichte wurden gelöscht.');
+                Flash::add('success', 'Die Kategorie und ihre Sorten wurden gelöscht.');
             }
             redirect('menu');
 
@@ -354,7 +354,16 @@ try {
                     'active'      => isset($_POST['active']) ? 1 : 0,
                     'sort_order'  => ($item && (int) $item['category_id'] === $catId)
                         ? (int) $item['sort_order'] : $app->menu->nextSort('items', $catId),
+                    'image'       => $item['image'] ?? '',
                 ];
+                if (!empty($_POST['remove_image'])) {
+                    $app->upload->delete($data['image']);
+                    $data['image'] = '';
+                }
+                if ($new = $app->upload->image('image', 'item')) {
+                    $app->upload->delete($data['image']);
+                    $data['image'] = $new;
+                }
                 if ($data['name'] === '') {
                     $errors[] = 'Bitte geben Sie einen Namen ein.';
                 }
@@ -366,7 +375,7 @@ try {
                 }
                 if (!$errors) {
                     $app->menu->saveItem($data, $id ?: null);
-                    Flash::add('success', 'Das Gericht wurde gespeichert.');
+                    Flash::add('success', 'Der Eintrag wurde gespeichert.');
                     redirect('menu');
                 }
                 $item = array_merge($item ?? [], $data);
@@ -378,7 +387,7 @@ try {
             $app->render('admin/item_edit.tpl', [
                 'item'       => $item ?? [
                     'category_id' => (int) ($_GET['category'] ?? 0), 'name' => '', 'description' => '',
-                    'price_cents' => 0, 'portion' => '', 'variant_list' => [], 'allergens' => '', 'tags' => '', 'active' => 1,
+                    'price_cents' => 0, 'portion' => '', 'variant_list' => [], 'allergens' => '', 'tags' => '', 'active' => 1, 'image' => '',
                 ],
                 'id'         => $id,
                 'categories' => $categories,
@@ -392,7 +401,7 @@ try {
                 if ($isAjax) {
                     json(['ok' => true]);
                 }
-                Flash::add('success', 'Das Gericht wurde gelöscht.');
+                Flash::add('success', 'Der Eintrag wurde gelöscht.');
             }
             redirect('menu');
 

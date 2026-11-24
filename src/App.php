@@ -56,6 +56,10 @@ final class App
         $smarty->registerPlugin('modifier', 'with_phone', [Format::class, 'withPhone']);
         $smarty->registerPlugin('modifier', 'weekday_de', [ContactForm::class, 'weekday']);
         $smarty->registerPlugin('modifier', 'area_label', [ContactForm::class, 'areaLabel']);
+        // Foto einer Sorte: mitgelieferte Datei (assets/…) oder Upload aus dem Backend
+        $uploadUrl = $this->config['upload_url'];
+        $smarty->registerPlugin('modifier', 'item_image', fn (?string $img, string $base = '') =>
+            $img ? self::asset($base . (str_starts_with($img, 'assets/') ? $img : $uploadUrl . '/' . $img)) : '');
         $smarty->registerPlugin('modifier', 'nl2br', 'nl2br');
         $smarty->registerPlugin('modifier', 'urlencode', 'rawurlencode');
 

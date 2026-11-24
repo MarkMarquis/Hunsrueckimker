@@ -19,7 +19,7 @@
             <a href="index.php?page=hours"{if in_array($page, ['hours','exception_edit'])} class="is-active"{/if}>Öffnungszeiten</a>
             <a href="index.php?page=slides"{if $page=='slides'} class="is-active"{/if}>Bannerbilder</a>
             <a href="index.php?page=news"{if in_array($page, ['news','news_edit'])} class="is-active"{/if}>News</a>
-            <a href="index.php?page=menu"{if in_array($page, ['menu','category_edit','item_edit'])} class="is-active"{/if}>Speisekarte</a>
+            <a href="index.php?page=menu"{if in_array($page, ['menu','category_edit','item_edit'])} class="is-active"{/if}>Honigsorten</a>
             <a href="index.php?page=messages"{if in_array($page, ['messages','message'])} class="is-active"{/if}>Nachrichten{if $unread_count} <span class="badge">{$unread_count}</span>{/if}</a>
             <a href="index.php?page=password"{if $page=='password'} class="is-active"{/if}>Passwort</a>
             <a href="../" target="_blank" rel="noopener">Webseite ansehen ↗</a>

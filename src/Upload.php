@@ -87,7 +87,7 @@ final class Upload
 
     public function delete(?string $name): void
     {
-        if (!$name || basename($name) !== $name) {
+        if (!$name || basename($name) !== $name) { // mitgelieferte Dateien (assets/…) werden nie gelöscht
             return;
         }
         $path = $this->config['upload_dir'] . '/' . $name;

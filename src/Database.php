@@ -117,6 +117,7 @@ final class Database
             'allergens' => "TEXT NOT NULL DEFAULT ''",
             'portion'   => "TEXT NOT NULL DEFAULT ''",
             'variants'  => "TEXT NOT NULL DEFAULT '[]'",
+            'image'     => "TEXT NOT NULL DEFAULT ''",
         ]);
 
         $hasSettings = (int) $pdo->query('SELECT COUNT(*) FROM settings')->fetchColumn();
@@ -137,7 +138,7 @@ final class Database
                     ->execute([json_encode(OpeningHours::defaultWeek())]);
             }
             $pdo->prepare("INSERT INTO settings (key, value) VALUES ('opening_note', ?) ON CONFLICT(key) DO NOTHING")
-                ->execute(['']);
+                ->execute(['Niemand macht auf? Bitte auch im Garten schauen! Oder vorher kurz per WhatsApp oder Telefon melden.']);
             $pdo->prepare("INSERT INTO settings (key, value) VALUES ('opening_week_version', ?)
                            ON CONFLICT(key) DO UPDATE SET value = excluded.value")
                 ->execute([(string) OpeningHours::WEEK_VERSION]);
@@ -224,17 +225,17 @@ final class Database
 
         $catStmt  = $pdo->prepare('INSERT INTO menu_categories (name, description, section, sort_order) VALUES (?, ?, ?, ?)');
         $itemStmt = $pdo->prepare(
-            'INSERT INTO menu_items (category_id, name, description, price_cents, allergens, tags, portion, variants, sort_order)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO menu_items (category_id, name, description, price_cents, allergens, tags, portion, variants, sort_order, image)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         );
         foreach (SeedData::menu() as $ci => [$cat, $desc, $section, $items]) {
             $catStmt->execute([$cat, $desc, $section, ($ci + 1) * 10]);
             $catId = (int) $pdo->lastInsertId();
-            foreach ($items as $ii => [$name, $idesc, $price, $allergens, $tags, $portion, $variants]) {
+            foreach ($items as $ii => [$name, $idesc, $price, $allergens, $tags, $portion, $variants, $image]) {
                 $variants = array_map(fn ($v) => ['label' => $v[0], 'price_cents' => $v[1]], $variants);
                 $itemStmt->execute([
                     $catId, $name, $idesc, $price, $allergens, $tags, $portion,
-                    json_encode($variants, JSON_UNESCAPED_UNICODE), ($ii + 1) * 10,
+                    json_encode($variants, JSON_UNESCAPED_UNICODE), ($ii + 1) * 10, $image,
                 ]);
             }
         }

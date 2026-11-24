@@ -4,42 +4,48 @@ declare(strict_types=1);
 namespace App;
 
 /**
- * Platzhalter-Startinhalte der Vorlage.
- * Werden nur beim allerersten Start in eine leere Datenbank geschrieben.
+ * Startinhalte für „Der Hunsrück-Imker“ (Texte der bisherigen Webseite hunsrueck-imker.de
+ * und des Verkaufsschilds „Honigsorten 2026“). Werden nur beim allerersten Start
+ * in eine leere Datenbank geschrieben und danach im Backend gepflegt.
  */
 final class SeedData
 {
     public static function settings(): array
     {
         return [
-            'site_name'        => 'Ihr Firmenname',
-            'site_subtitle'    => 'Untertitel oder Zusatz',
-            'slogan'           => 'Ein kurzer Slogan, der Ihr Angebot auf den Punkt bringt',
-            'meta_description' => 'Ihr Firmenname – kurze Beschreibung für Suchmaschinen (ca. 150 Zeichen). Bitte im Backend unter Einstellungen anpassen.',
+            'site_name'        => 'Der Hunsrück-Imker',
+            'site_subtitle'    => 'Imkerei Mark Marquis',
+            'slogan'           => 'Honig aus der Nationalparkregion',
+            'meta_description' => 'Der Hunsrück-Imker Mark Marquis aus Herborn: Honig aus der Nationalparkregion Hunsrück-Hochwald – Frühjahrsblütenhonig, Sommertrachthonig sowie Wald- und Blütenhonig direkt vom Imker.',
             'logo'             => '',
             'banner'           => '',
-            'about_title'      => 'Herzlich willkommen',
-            'about_text'       => "Hier steht ein kurzer Begrüßungstext. Stellen Sie sich und Ihr Angebot in wenigen Sätzen vor.\n\nAlle Texte, Bilder, Öffnungszeiten und Kontaktdaten lassen sich im Backend unter /admin/ ändern.\n\nWir freuen uns auf Sie!",
+            'about_title'      => 'Herzlich willkommen beim Hunsrück-Imker!',
+            'about_text'       => "Am östlichen Rand des Hunsrücks, zwischen Wildenburgkopf und Idar-Oberstein gelegen, imkere ich mit meinen 25 Bienenvölkern im schönen Hunsrückort Herborn. Die Ortschaft grenzt im Südwesten mit ihrer Gemarkung direkt an den Nationalpark. Diesen besuchen meine Bienen regelmäßig, da sie nur wenige hundert Meter entfernt in ihren Stöcken leben.\n\nWeitere Völker stehen in Weierbach, Algenrodt und Kirchenbollenbach. Durch die unterschiedlichen Standorte bekommt jeder Honig seine ganz eigenen Geschmacksnuancen.",
 
-            'highlight_title'  => 'Unsere Highlights',
+            'highlight_title'  => 'Die Trachten rund um Herborn',
             'highlight_image'  => '',
             'highlight_text'   => <<<TXT
-## Was uns ausmacht
-In diesem Bereich stellen Sie etwas Besonderes ausführlicher vor: eine Spezialität, eine Geschichte oder das, wofür man Sie kennt.
+## Frühjahr
+Die Umgebung ist geprägt von viel Wald und Wiesen und eher extensiver Landwirtschaft. Im Frühjahr gibt es immer wieder wechselnde Rapsfelder in der Umgebung, die für einen sehr hellen Frühjahrsblütenhonig sorgen – ergänzt um Steinobst wie Kirsche, Mirabelle und Zwetschge. Der vielfach vorhandene Schwarzdorn ist ein erster Pollen- und Nektarlieferant. Später folgt die Apfelblüte in den vielen Privatgärten.
 
-## Zwischenüberschrift
-Eine Zeile, die mit „## “ beginnt, wird zur Zwischenüberschrift. Eine Leerzeile beginnt einen neuen Absatz.
+Den Abschluss der Frühjahrstracht bildet bei uns der Weißdorn, der im Mai in den Ortsrandlagen und vielfach in den Wäldern der „Heckengesellschaften“ von Veitsrodt und Herborn blüht.
+
+## Sommer
+Im Sommer blühen die vielen Linden, besonders in Richtung des Nachbardorfs Veitsrodt. Auf nahezu jeder Lichtung und durchforsteten Fläche in den umgebenden Wäldern findet man zahlreiche Brombeerhecken. Diese liefern neben wilden Himbeeren viel Nektar für den Sommerhonig.
+
+Je nach Jahr sammeln die Bienen außerdem Honigtau von den Bäumen im nahen Wald – daraus entsteht unser Wald- und Blütenhonig.
 TXT,
 
-            'menu_note'        => 'Alle Preise in Euro inkl. gesetzlicher MwSt.',
-            'allergen_legend'  => "Allergene:\nA Gluten · B Krebstiere · C Eier · D Fisch · E Erdnüsse · F Soja · G Milch/Laktose · H Schalenfrüchte · I Sellerie · J Senf · K Sesam\n\nZusatzstoffe:\n1 mit Farbstoff · 2 mit Konservierungsstoffen · 3 mit Schwefeldioxid · 4 mit Geschmacksverstärker · 5 mit Antioxidationsmitteln",
+            'menu_title'       => 'Unsere Honige',
+            'menu_note'        => "Alle Honige im 500-g-Glas. Ganze Kiste (12 Gläser): 3 € Rabatt.\n\nAlle Preise in Euro.",
+            'allergen_legend'  => '',
 
-            'address'          => "Musterstraße 1\n12345 Musterstadt",
-            'phone'            => '01234 / 56 78 90',
+            'address'          => "Hauptstraße 11\n55758 Herborn",
+            'phone'            => '0162 9413598',
             'fax'              => '',
-            'email'            => 'info@ihre-domain.de',
+            'email'            => 'mail@hunsrueck-imker.de',
             'opening_hours'    => '',
-            'footer_text'      => 'Wir freuen uns auf Ihren Besuch!',
+            'footer_text'      => 'Honig aus der Nationalparkregion – direkt vom Imker.',
             'imprint_text'     => self::imprint(),
             'privacy_text'     => self::privacy(),
         ];
@@ -47,37 +53,32 @@ TXT,
 
     /**
      * [Kategorie, Beschreibung, Bereich ('menu'|'highlight'), Einträge]
-     * Eintrag: [Name, Beschreibung, Preis (Cent), Kennzeichnung, Hinweise, Portion, Varianten [[Label, Cent], ...]]
+     * Eintrag: [Name, Beschreibung, Preis (Cent, 0 = kein Preis), Kennzeichnung, Hinweise, Portion, Varianten [[Label, Cent], ...], Foto]
      */
     public static function menu(): array
     {
         return [
-            ['Highlight-Kategorie', 'Kategorien mit dem Bereich „Highlight-Bereich“ erscheinen hier', 'highlight', [
-                ['Beispiel-Eintrag 1', 'Kurze Beschreibung', 1990, '', 'Empfehlung', '', []],
-                ['Beispiel-Eintrag 2', 'Mit zwei Größen bzw. Preisvarianten', 2490, '', '', 'klein', [['groß', 3290]]],
-            ]],
-            ['Kategorie A', '', 'menu', [
-                ['Beispiel-Eintrag', 'Kurze Beschreibung des Eintrags', 890, 'A, G', 'vegetarisch', '', []],
-                ['Weiterer Eintrag', 'Kurze Beschreibung des Eintrags', 1290, '', '', '', []],
-            ]],
-            ['Kategorie B', 'Optionale Beschreibung der Kategorie', 'menu', [
-                ['Beispiel-Eintrag', '', 450, '', '', '0,3 l', [['0,5 l', 650]]],
+            ['Honigsorten 2026', 'Jede Ortslage mit eigenem Geschmack', 'menu', [
+                ['Sommertrachthonig', 'Wald, Brombeere, Himbeere, Lindenblüte – aus Herborn, Kirchenbollenbach oder Weierbach', 700, '', 'cremig', '500 g', [], 'assets/img/honig/sommertrachthonig.jpg'],
+                ['Wald- und Blütenhonig', 'Waldhonig, Lindenblüten, Brombeere – aus Herborn', 700, '', 'flüssig', '500 g', [], 'assets/img/honig/wald-und-bluetenhonig.jpg'],
+                ['Frühjahrsblütenhonig', 'Viel Obstblüte und gemischte Frühjahrsblüte – aus Herborn oder Kirchenbollenbach', 650, '', 'feinsteif', '500 g', [], 'assets/img/honig/fruehjahrsbluetenhonig.jpg'],
+                ['Frühjahrsblütenhonig mit Raps', 'Überwiegend Raps – aus Weierbach', 650, '', 'feinsteif', '500 g', [], ''],
             ]],
         ];
     }
 
-    /** Bearbeitbare Textblöcke des Kontakt-/Reservierungsformulars (Standardtexte) */
+    /** Bearbeitbare Textblöcke des Kontakt-/Bestellformulars (Standardtexte) */
     public static function contactTexts(): array
     {
         return [
-            'contact_title'       => 'Kontakt & Reservierung',
-            'form_title'          => 'Anfrage & Tischreservierung',
-            'form_intro'          => 'Sie haben eine Frage oder möchten reservieren? Nutzen Sie gerne dieses Formular – wir melden uns so schnell wie möglich bei Ihnen.',
-            'form_res_note'       => 'Ihre Reservierung ist eine Anfrage und erst mit unserer Bestätigung verbindlich.',
+            'contact_title'       => 'Kontakt & Bestellung',
+            'form_title'          => 'Anfrage & Honigbestellung',
+            'form_intro'          => 'Sie möchten Honig bestellen oder haben eine Frage? Schreiben Sie mir gerne – ich melde mich so schnell wie möglich.',
+            'form_res_note'       => 'Ihre Bestellung ist unverbindlich. Ich prüfe, ob alles vorrätig ist, und melde mich mit einer Bestätigung bei Ihnen.',
             'form_consent'        => 'Ich stimme zu, dass meine Angaben zur Bearbeitung meiner Anfrage gespeichert und verarbeitet werden.',
-            'form_hint'           => 'Kurzfristige Reservierungen gerne auch telefonisch unter {telefon}.',
-            'form_success'        => 'Vielen Dank für Ihre Nachricht! Wir melden uns so schnell wie möglich.',
-            'form_success_res'    => 'Vielen Dank für Ihre Reservierungsanfrage! Wir prüfen die Verfügbarkeit und melden uns so schnell wie möglich bei Ihnen. Die Reservierung ist erst mit unserer Bestätigung verbindlich.',
+            'form_hint'           => 'Gerne auch per WhatsApp oder Telefon: {telefon}.',
+            'form_success'        => 'Vielen Dank für Ihre Nachricht! Ich melde mich so schnell wie möglich.',
+            'form_success_res'    => 'Vielen Dank für Ihre Bestellung! Ich prüfe, ob alles vorrätig ist, und melde mich so schnell wie möglich bei Ihnen.',
         ];
     }
 
@@ -88,27 +89,19 @@ TXT,
     {
         return <<<TXT
 ## Angaben gemäß § 5 DDG
-[Firmenname und Rechtsform]
-Musterstraße 1
-12345 Musterstadt
-
-## Vertreten durch
-[Name der/des Vertretungsberechtigten]
+Imkerei „Der Hunsrück-Imker“
+Mark Marquis
+Hauptstraße 11
+55758 Herborn
 
 ## Kontakt
-Telefon: 01234 / 56 78 90
-E-Mail: info@ihre-domain.de
-
-## Registereintrag
-[Registergericht und Registernummer, falls vorhanden]
-
-## Umsatzsteuer-ID
-[USt-IdNr. gemäß § 27a UStG, falls vorhanden]
+Telefon: 0162 9413598
+E-Mail: mail@hunsrueck-imker.de
 
 ## Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
-[Name]
-Musterstraße 1
-12345 Musterstadt
+Mark Marquis
+Hauptstraße 11
+55758 Herborn
 
 ## Verbraucherstreitbeilegung
 Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
@@ -123,12 +116,11 @@ TXT;
         return <<<TXT
 ## 1. Verantwortlicher
 Verantwortlich für die Datenverarbeitung auf dieser Webseite ist:
-[Firmenname und Rechtsform]
-Musterstraße 1
-12345 Musterstadt
-Vertreten durch: [Name]
-Telefon: 01234 / 56 78 90
-E-Mail: info@ihre-domain.de
+Imkerei „Der Hunsrück-Imker“, Mark Marquis
+Hauptstraße 11
+55758 Herborn
+Telefon: 0162 9413598
+E-Mail: mail@hunsrueck-imker.de
 
 ## 2. Allgemeines
 Wir nehmen den Schutz Ihrer persönlichen Daten ernst und verarbeiten sie ausschließlich im Rahmen der gesetzlichen Bestimmungen, insbesondere der Datenschutz-Grundverordnung (DSGVO). Diese Webseite verwendet keine Analyse- oder Tracking-Werkzeuge, keine Werbe-Cookies und keine Social-Media-Plugins. Schriftarten und Skripte werden direkt von unserem Server geladen; es werden beim Aufruf der Seite keine Daten an Dritte wie Google übermittelt.
@@ -143,10 +135,10 @@ Diese Webseite nutzt aus Sicherheitsgründen eine SSL- bzw. TLS-Verschlüsselung
 ## 5. Cookies
 Wir verwenden ausschließlich ein technisch notwendiges Cookie („site_session“). Es speichert eine zufällige Sitzungskennung, die für den Schutz des Kontaktformulars vor Missbrauch (Sicherheits-Token, Spam-Schutz) und für die Anmeldung im Verwaltungsbereich erforderlich ist. Das Cookie wird beim Schließen des Browsers gelöscht. Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG in Verbindung mit Art. 6 Abs. 1 lit. f DSGVO. Eine Einwilligung ist hierfür nicht erforderlich.
 
-## 6. Kontaktformular und Reservierungsanfragen
-Wenn Sie uns über das Formular eine Anfrage oder eine Reservierungsanfrage senden, verarbeiten wir die von Ihnen eingegebenen Daten: Name, E-Mail-Adresse, optional Telefonnummer, Betreff und Nachricht sowie bei Reservierungen Datum, Uhrzeit, Personenzahl und den gewünschten Bereich.
-Wir verwenden diese Daten ausschließlich, um Ihre Anfrage zu bearbeiten, die Verfügbarkeit zu prüfen und Ihnen zu antworten. Die Anfrage wird in unserer Datenbank auf dem Server unseres Hosting-Anbieters gespeichert und uns zusätzlich per E-Mail zugestellt.
-Rechtsgrundlage ist bei Reservierungsanfragen Art. 6 Abs. 1 lit. b DSGVO (Durchführung vorvertraglicher Maßnahmen), bei sonstigen Anfragen Ihre Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO sowie unser berechtigtes Interesse an der Beantwortung von Anfragen (Art. 6 Abs. 1 lit. f DSGVO). Ihre Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen, etwa per E-Mail.
+## 6. Kontaktformular und Bestellanfragen
+Wenn Sie uns über das Formular eine Anfrage oder eine Honigbestellung senden, verarbeiten wir die von Ihnen eingegebenen Daten: Name, E-Mail-Adresse, optional Telefonnummer, Betreff und Nachricht sowie bei Bestellungen die gewünschte Lieferart, die Anzahl der Gläser und einen Wunschtermin.
+Wir verwenden diese Daten ausschließlich, um Ihre Anfrage bzw. Bestellung zu bearbeiten und Ihnen zu antworten. Die Anfrage wird in unserer Datenbank auf dem Server unseres Hosting-Anbieters gespeichert und uns zusätzlich per E-Mail zugestellt.
+Rechtsgrundlage ist bei Bestellungen Art. 6 Abs. 1 lit. b DSGVO (Durchführung vorvertraglicher Maßnahmen), bei sonstigen Anfragen Ihre Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO sowie unser berechtigtes Interesse an der Beantwortung von Anfragen (Art. 6 Abs. 1 lit. f DSGVO). Ihre Einwilligung können Sie jederzeit mit Wirkung für die Zukunft widerrufen, etwa per E-Mail.
 Wir löschen Ihre Daten, sobald sie für die Bearbeitung Ihrer Anfrage nicht mehr erforderlich sind und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
 
 ## 7. Kontakt per E-Mail oder Telefon
@@ -157,7 +149,7 @@ Unsere Webseite enthält Links zu anderen Anbietern, etwa „Route planen“ zu 
 
 ## 9. Ihre Rechte
 Sie haben jederzeit das Recht auf Auskunft über Ihre bei uns gespeicherten Daten (Art. 15 DSGVO), auf Berichtigung (Art. 16 DSGVO), Löschung (Art. 17 DSGVO), Einschränkung der Verarbeitung (Art. 18 DSGVO), Datenübertragbarkeit (Art. 20 DSGVO) sowie auf Widerspruch gegen die Verarbeitung (Art. 21 DSGVO). Wenden Sie sich dazu einfach an die oben genannten Kontaktdaten.
-Sie haben außerdem das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig für uns ist: [Datenschutz-Aufsichtsbehörde des Bundeslandes, Anschrift].
+Sie haben außerdem das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig für uns ist: Der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Rheinland-Pfalz, Hintere Bleiche 34, 55116 Mainz.
 
 ## 10. Stand
 Stand dieser Datenschutzerklärung: November 2026
@@ -174,13 +166,19 @@ TXT;
      */
     public static function slides(): array
     {
-        return [];
+        return [
+            ['assets/img/slides/rapsfelder-herborn.jpg', 'Rapsfelder in Herborn', 'center'],
+            ['assets/img/slides/honigauswahl.jpg', 'Honigauswahl vom Hunsrück-Imker', 'center'],
+            ['assets/img/slides/krokusbluete.jpg', 'Krokusblüte – erster Pollen im Frühjahr', 'center'],
+            ['assets/img/slides/inkarnatklee.jpg', 'Inkarnatklee und Kornblumen', 'center'],
+        ];
     }
 
     public static function news(): array
     {
         return [
-            ['Unsere neue Webseite ist online', "Herzlich willkommen auf unserer neuen Webseite! Hier finden Sie ab sofort unser Angebot, Neuigkeiten und alle Kontaktdaten.\n\nÜber das Kontaktformular können Sie uns jederzeit eine Nachricht schicken.", 0],
+            ['Die Honige 2026 sind im Glas', "Der neue Frühjahrsblütenhonig von 2026 ist im Glas! Geschleudert wurde Ende Mai 2026 – von meinen Völkern aus Herborn, Weierbach, Algenrodt und Kirchenbollenbach. In diesem Jahr mit geringerem Anteil Rapsnektar. Die Honige der einzelnen Ortslagen haben durch Steinobst, Kernobst, Weißdorn, Ahorn und weitere Nektarherkünfte ihre ganz eigenen Geschmacksnuancen; etwas mehr Rapsnektar hat der Honig aus Weierbach.\n\nAuch der cremige Sommertrachthonig und der flüssige Wald- und Blütenhonig sind erhältlich – alle Sorten und Preise finden Sie unter „Unsere Honige“.", 0],
+            ['Wald- und Blütenhonig – flüssig abgefüllt', "Direkt nach der Frühtracht 2026 haben die Bienen zunächst viel Honigtau von den Bäumen im nahen Wald gesammelt. Im Juni kam Nektar von Linde und Brombeere hinzu. So entstand ein Wald- und Blütenhonig, der Mitte Juli reif geerntet und flüssig ins Glas abgefüllt wurde.", 3],
         ];
     }
 }

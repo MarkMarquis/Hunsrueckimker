@@ -1,4 +1,4 @@
-/* Webseiten-Vorlage – Frontend-Skripte (jQuery) */
+/* Der Hunsrück-Imker – Frontend-Skripte (jQuery) */
 (function ($) {
     'use strict';
     document.documentElement.classList.remove('no-js');
@@ -162,9 +162,8 @@
         }, 450);
     });
 
-    /* ---------- Anfrage / Reservierung umschalten ---------- */
+    /* ---------- Anfrage / Honigbestellung umschalten ---------- */
     var $cform = $('#contact-form');
-    var $area = $('#cf-area');
 
     function isReservation() {
         return $cform.find('[name=type]:checked').val() === 'reservierung';
@@ -173,25 +172,14 @@
         $cform.find('[name=type][value=' + (reservation ? 'reservierung' : 'anfrage') + ']').prop('checked', true);
         $cform.toggleClass('is-reservation', reservation);
     }
-    // Bereiche mit Mindestpersonenzahl (2. OG ab 15) erst ab passender Gruppengröße freigeben
-    function updateAreas() {
-        var persons = parseInt($('#cf-persons').val(), 10) || 0;
-        $area.find('option').each(function () {
-            var min = parseInt($(this).data('min'), 10) || 0;
-            $(this).prop('disabled', min > 0 && persons > 0 && persons < min);
-        });
-        if ($area.find('option:selected').prop('disabled')) { $area.val('egal'); }
-    }
     $cform.on('change', '[name=type]', function () { setMode(isReservation()); });
-    $('#cf-persons').on('input change', updateAreas);
-    updateAreas();
 
-    // „Tisch reservieren“ im Banner: Reservierung vorauswählen
+    // „Honig bestellen“ im Banner: Bestellung vorauswählen
     $('.js-reserve').on('click', function () {
         setMode(true);
-        setTimeout(function () { $('#cf-date').trigger('focus'); }, 650);
+        setTimeout(function () { $('#cf-message').trigger('focus'); }, 650);
     });
-    if (location.hash === '#reservierung') { setMode(true); }
+    if (location.hash === '#bestellen') { setMode(true); }
 
     /* ---------- Kontaktformular per AJAX ---------- */
     var $form = $('#contact-form');
@@ -218,12 +206,9 @@
         if (!$.trim($form.find('[name=name]').val())) { setError('name', 'Bitte geben Sie Ihren Namen an.'); ok = false; }
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('email', 'Bitte geben Sie eine gültige E-Mail-Adresse an.'); ok = false; }
         if (isReservation()) {
-            var persons = parseInt($form.find('[name=persons]').val(), 10) || 0;
-            var minArea = parseInt($area.find('option:selected').data('min'), 10) || 0;
-            if (!$form.find('[name=res_date]').val()) { setError('res_date', 'Bitte wählen Sie ein Datum.'); ok = false; }
-            if (!$form.find('[name=res_time]').val()) { setError('res_time', 'Bitte wählen Sie eine Uhrzeit.'); ok = false; }
-            if (persons < 1) { setError('persons', 'Bitte geben Sie die Anzahl der Personen an.'); ok = false; }
-            else if (persons < minArea) { setError('area', 'Dieser Bereich ist nur für Gruppen ab ' + minArea + ' Personen buchbar.'); ok = false; }
+            if ($.trim($form.find('[name=message]').val()).length < 3) {
+                setError('message', 'Bitte geben Sie an, welchen Honig Sie bestellen möchten.'); ok = false;
+            }
         } else if ($.trim($form.find('[name=message]').val()).length < 10) {
             setError('message', 'Bitte schreiben Sie eine Nachricht (mind. 10 Zeichen).'); ok = false;
         }
@@ -255,13 +240,12 @@
             var wasReservation = isReservation();
             $form[0].reset();
             setMode(wasReservation);
-            updateAreas();
         }).fail(function (xhr) {
             var res = xhr.responseJSON || {};
             $.each(res.errors || {}, setError);
             showAlert(false, res.message || 'Die Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.');
         }).always(function () {
-            $btn.prop('disabled', false).html('<span class="msg-only">Nachricht senden</span><span class="res-only">Reservierung anfragen</span>');
+            $btn.prop('disabled', false).html('<span class="msg-only">Nachricht senden</span><span class="res-only">Bestellung anfragen</span>');
         });
     });
 

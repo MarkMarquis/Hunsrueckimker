@@ -1,7 +1,7 @@
 {extends file="admin/layout.tpl"}
 {block name=title}Kategorie{/block}
 {block name=content}
-<p><a href="index.php?page=menu">&larr; Zurück zur Speisekarte</a></p>
+<p><a href="index.php?page=menu">&larr; Zurück zu den Honigsorten</a></p>
 <h1>{if $id}Kategorie bearbeiten{else}Neue Kategorie{/if}</h1>
 {include file="admin/_errors.tpl"}
 <form method="post" action="index.php?page=category_edit{if $id}&amp;id={$id}{/if}" class="card form">

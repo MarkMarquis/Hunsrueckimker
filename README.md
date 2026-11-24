@@ -1,9 +1,10 @@
-# Webseiten-Vorlage
+# Der Hunsrück-Imker – Webseite
 
-Neutrale Onepager-Vorlage mit kleinem Backend zur Pflege der Inhalte.
-Technisch identisch mit der Webseite „Das original Spießbratenhaus“, aber ohne deren Inhalte und Bilder:
-Name, Texte, Bilder, Öffnungszeiten, Kontaktdaten, Impressum und Datenschutz sind Platzhalter
-und werden nach der Installation im Backend (`/admin/`) gepflegt.
+Onepager für die Imkerei **Der Hunsrück-Imker – Mark Marquis** (Herborn) mit kleinem Backend zur Pflege der Inhalte.
+Technisch identisch mit der Webseite „Das original Spießbratenhaus“.
+
+- Live (bisher TYPO3): https://hunsrueck-imker.de
+- Entwicklung: https://neu.hunsrueck-imker.de
 
 **Technik:** PHP 8.1+, Smarty 5, jQuery 3.7 (lokal eingebunden), SQLite (keine separate Datenbank nötig).
 
@@ -12,10 +13,10 @@ und werden nach der Installation im Backend (`/admin/`) gepflegt.
 **Webseite (Onepager)**
 - Banner mit Logo, Name, Untertitel, Slogan und Buttons (Speisekarte, Anrufen)
 - Über uns
-- **Highlight-Bereich** (dunkel abgesetzt): ausführlicher Text, Bild und hervorgehobene Angebote
+- **Imkerei-Bereich** (dunkel abgesetzt): die Trachten rund um Herborn mit Bild
 - Aktuelles (News) mit „Weiterlesen“ und „Ältere Meldungen anzeigen“
-- Speisekarte mit Kategorie-Tabs, Portionsgrößen und Preisvarianten, Allergen-Kennzeichnung und Legende
-- Öffnungszeiten, Adresse und **Kontaktformular** (AJAX, Spam-Schutz per Honeypot und Mindestzeit, DSGVO-Einwilligung)
+- **Honigsorten** mit Foto, Glasgröße, Preis (Preis 0 = ausgeblendet) und Hinweisen wie „cremig“ oder „flüssig“
+- Verkaufszeiten, Adresse und **Kontakt- & Bestellformular** (Allgemeine Anfrage oder Honigbestellung mit Lieferart, Anzahl Gläser und Wunschtermin; AJAX, Spam-Schutz per Honeypot und Mindestzeit, DSGVO-Einwilligung)
 - Impressum- und Datenschutzseite
 - Responsiv, mit sanftem Scrollen; ohne externe Fonts oder CDNs (DSGVO-freundlich)
 
@@ -45,10 +46,9 @@ composer install --no-dev
 3. `https://ihre-domain.de/admin/` aufrufen und das Administrator-Konto anlegen.
 
 Die Datenbank (`data/database.sqlite`) wird beim ersten Aufruf automatisch angelegt
-und mit Platzhalter-Inhalten aus `src/SeedData.php` befüllt.
+und mit den Inhalten aus `src/SeedData.php` befüllt (Texte der bisherigen Webseite, Honigsorten und Preise 2026).
 
-**Vor dem Livegang unbedingt anpassen:** Name, Texte, Kontaktdaten, Öffnungszeiten,
-**Impressum** und **Datenschutzerklärung** (enthalten Platzhalter in eckigen Klammern).
+**Vor dem Livegang prüfen:** In der **Datenschutzerklärung** (Abschnitt 3) den Hosting-Anbieter eintragen.
 
 ### Lokal testen
 
@@ -77,7 +77,7 @@ Auf dem Server wird nichts gelöscht; Datenbank, hochgeladene Bilder und `config
 | Highlight-Bereich | `public/assets/img/highlight.jpg` | Einstellungen → Logo & Bilder |
 
 Ein im Backend hochgeladenes Bild hat immer Vorrang vor der Standarddatei.
-Die Vorlage enthält keine Bilder; ohne Logo und Bannerbilder zeigt die Startseite einen schlichten Textbanner.
+Bannerbilder: `public/assets/img/slides/`, Fotos der Honigsorten: `public/assets/img/honig/`.
 Das Logo wird am besten als PNG mit weißem oder transparentem Hintergrund und ca. 900 px Breite hinterlegt.
 
 ## Farben und Schriften

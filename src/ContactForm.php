@@ -13,17 +13,20 @@ final class ContactForm
 
     public const TYPES = [
         'anfrage'      => 'Allgemeine Anfrage',
-        'reservierung' => 'Tischreservierung',
+        'reservierung' => 'Honigbestellung',
     ];
 
-    /** Sitzbereiche für Reservierungen: Schlüssel => [Bezeichnung, Mindestpersonen] */
+    /**
+     * Lieferarten für Honigbestellungen: Schlüssel => [Bezeichnung, unbenutzt]
+     * (Typ „reservierung“ und Felder res_date/persons/area bleiben aus der Codebasis erhalten:
+     *  res_date = Wunschtermin, persons = Anzahl Gläser, area = Lieferart.)
+     */
     public const AREAS = [
-        'egal'           => ['Keine Präferenz', 0],
-        'innen'          => ['Innenbereich', 0],
-        'aussen'         => ['Außenbereich', 0],
+        'abholung' => ['Abholung in Herborn', 0],
+        'versand'  => ['Versand (nach Absprache)', 0],
     ];
 
-    public const MAX_PERSONS = 200;
+    public const MAX_PERSONS = 100;
 
     public static function areaLabel(string $key): string
     {
@@ -58,7 +61,7 @@ final class ContactForm
             $data['res_date'] = trim((string) ($input['res_date'] ?? ''));
             $data['res_time'] = trim((string) ($input['res_time'] ?? ''));
             $data['persons']  = (int) ($input['persons'] ?? 0);
-            $data['area']     = array_key_exists((string) ($input['area'] ?? ''), self::AREAS) ? (string) $input['area'] : 'egal';
+            $data['area']     = array_key_exists((string) ($input['area'] ?? ''), self::AREAS) ? (string) $input['area'] : 'abholung';
         }
 
         // Spam: verstecktes Feld ausgefüllt oder Formular zu schnell abgeschickt
@@ -83,28 +86,25 @@ final class ContactForm
             $errors['subject'] = 'Der Betreff ist zu lang.';
         }
         if ($isReservation) {
-            $date = \DateTimeImmutable::createFromFormat('!Y-m-d', $data['res_date']);
-            if (!$date || $date->format('Y-m-d') !== $data['res_date']) {
-                $errors['res_date'] = 'Bitte wählen Sie ein Datum.';
-            } elseif ($date < new \DateTimeImmutable('today')) {
-                $errors['res_date'] = 'Das Datum liegt in der Vergangenheit.';
-            } elseif ($date > new \DateTimeImmutable('+1 year')) {
-                $errors['res_date'] = 'Reservierungen sind bis zu ein Jahr im Voraus möglich.';
+            if ($data['res_date'] !== '') {
+                $date = \DateTimeImmutable::createFromFormat('!Y-m-d', $data['res_date']);
+                if (!$date || $date->format('Y-m-d') !== $data['res_date']) {
+                    $errors['res_date'] = 'Bitte prüfen Sie das Datum.';
+                } elseif ($date < new \DateTimeImmutable('today')) {
+                    $errors['res_date'] = 'Das Datum liegt in der Vergangenheit.';
+                } elseif ($date > new \DateTimeImmutable('+1 year')) {
+                    $errors['res_date'] = 'Bitte wählen Sie einen Termin innerhalb eines Jahres.';
+                }
             }
-            if (!preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $data['res_time'])) {
-                $errors['res_time'] = 'Bitte wählen Sie eine Uhrzeit.';
+            if ($data['persons'] < 0 || $data['persons'] > self::MAX_PERSONS) {
+                $errors['persons'] = 'Bitte geben Sie eine Anzahl zwischen 1 und ' . self::MAX_PERSONS . ' an.';
             }
-            if ($data['persons'] < 1 || $data['persons'] > self::MAX_PERSONS) {
-                $errors['persons'] = 'Bitte geben Sie die Anzahl der Personen an (1 bis ' . self::MAX_PERSONS . ').';
-            } elseif ($data['persons'] < self::AREAS[$data['area']][1]) {
-                $errors['area'] = 'Dieser Bereich ist erst für Gruppen ab ' . self::AREAS[$data['area']][1] . ' Personen buchbar.';
+            if (mb_strlen($data['message']) < 3 || mb_strlen($data['message']) > 5000) {
+                $errors['message'] = 'Bitte geben Sie an, welchen Honig Sie bestellen möchten.';
             }
-            if (mb_strlen($data['message']) > 5000) {
-                $errors['message'] = 'Die Anmerkung ist zu lang (max. 5000 Zeichen).';
-            }
-            if ($data['subject'] === '' && !isset($errors['res_date']) && !isset($errors['res_time']) && !isset($errors['persons'])) {
-                $data['subject'] = 'Reservierungsanfrage ' . Format::date($data['res_date'], 'd.m.Y') . ', '
-                    . $data['res_time'] . ' Uhr, ' . $data['persons'] . ' ' . ($data['persons'] === 1 ? 'Person' : 'Personen');
+            if ($data['subject'] === '') {
+                $data['subject'] = 'Honigbestellung' . ($data['persons'] > 0 ? ', ' . $data['persons'] . ' ' . ($data['persons'] === 1 ? 'Glas' : 'Gläser') : '')
+                    . ' – ' . self::areaLabel($data['area']);
             }
         } elseif (mb_strlen($data['message']) < 10 || mb_strlen($data['message']) > 5000) {
             $errors['message'] = 'Bitte schreiben Sie eine Nachricht (10 bis 5000 Zeichen).';
@@ -159,19 +159,18 @@ final class ContactForm
             return '';
         }
         $isReservation = $d['type'] === 'reservierung';
-        $subject = ($isReservation ? 'Reservierungsanfrage: ' : 'Kontaktanfrage: ')
+        $subject = ($isReservation ? 'Bestellung: ' : 'Kontaktanfrage: ')
                  . ($d['subject'] !== '' ? $d['subject'] : 'Webseite');
         $body    = ($isReservation
-                    ? "Neue RESERVIERUNGSANFRAGE über die Webseite\n"
-                      . "Bitte Verfügbarkeit prüfen und dem Gast antworten.\n\n"
-                      . 'Datum:    ' . Format::date($d['res_date'], 'd.m.Y') . ' (' . self::weekday($d['res_date']) . ")\n"
-                      . "Uhrzeit:  {$d['res_time']} Uhr\n"
-                      . "Personen: {$d['persons']}\n"
-                      . 'Bereich:  ' . self::areaLabel($d['area']) . "\n\n"
+                    ? "Neue HONIGBESTELLUNG über die Webseite\n"
+                      . "Bitte Verfügbarkeit prüfen und dem Kunden antworten.\n\n"
+                      . 'Lieferart:   ' . self::areaLabel($d['area']) . "\n"
+                      . 'Gläser:      ' . ($d['persons'] > 0 ? $d['persons'] : '–') . "\n"
+                      . 'Wunschtermin: ' . ($d['res_date'] !== '' ? Format::date($d['res_date'], 'd.m.Y') . ' (' . self::weekday($d['res_date']) . ')' : '–') . "\n\n"
                     : "Neue Nachricht über das Kontaktformular der Webseite\n\n")
                  . "Name:    {$d['name']}\nE-Mail:  {$d['email']}\nTelefon: " . ($d['phone'] !== '' ? $d['phone'] : '–') . "\n"
                  . "Betreff: {$d['subject']}\n\n"
-                 . ($d['message'] !== '' ? ($isReservation ? "Anmerkungen:\n" : '') . "{$d['message']}\n\n" : '')
+                 . ($d['message'] !== '' ? ($isReservation ? "Bestellung:\n" : '') . "{$d['message']}\n\n" : '')
                  . "--\nZum Antworten einfach auf diese E-Mail antworten – die Antwort geht direkt an {$d['email']}.\n";
         try {
             (new Mailer($this->app))->send($to, str_replace(["\r", "\n"], ' ', $subject), $body, $d['email'], $d['name']);

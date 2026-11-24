@@ -10,7 +10,7 @@ final class Settings
     /** Felder, die im Backend unter „Allgemein“ bearbeitet werden dürfen. */
     public const TEXT_FIELDS = [
         'site_name', 'site_subtitle', 'slogan', 'meta_description', 'about_title', 'about_text',
-        'highlight_title', 'highlight_text', 'menu_note', 'allergen_legend',
+        'highlight_title', 'highlight_text', 'menu_title', 'menu_note', 'allergen_legend',
         'address', 'phone', 'fax', 'email', 'footer_text',
         'imprint_text', 'privacy_text',
         'contact_email_to', 'contact_email_from',

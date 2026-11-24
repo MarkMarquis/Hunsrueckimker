@@ -22,8 +22,8 @@
             <ul>
                 <li><a href="#start">Start</a></li>
                 <li><a href="#aktuelles">Aktuelles</a></li>
-                <li><a href="#highlight">Highlights</a></li>
-                <li><a href="#speisekarte">Speisekarte</a></li>
+                <li><a href="#highlight">Imkerei</a></li>
+                <li><a href="#honige">Honige</a></li>
                 <li><a href="#kontakt">Kontakt</a></li>
             </ul>
         </nav>
@@ -54,8 +54,8 @@
                 {if $site.site_subtitle}<p class="hero-subtitle">{$site.site_subtitle}</p>{/if}
                 {if $site.slogan}<p class="hero-slogan">{$site.slogan}</p>{/if}
                 <div class="hero-actions">
-                    <a class="btn btn-primary" href="#speisekarte">Zur Speisekarte</a>
-                    <a class="btn btn-outline js-reserve" href="#reservierung">Tisch reservieren</a>
+                    <a class="btn btn-primary" href="#honige">Unsere Honige</a>
+                    <a class="btn btn-outline js-reserve" href="#bestellen">Honig bestellen</a>
                 </div>
             </div>
 
@@ -131,7 +131,7 @@
     {* ---------- Highlight-Bereich ---------- *}
     <section id="highlight" class="section section--dark">
         <div class="container">
-            <h2 class="section-title">{$site.highlight_title|default:'Highlights'}</h2>
+            <h2 class="section-title">{$site.highlight_title|default:'Die Imkerei'}</h2>
             <div class="ornament ornament--light" aria-hidden="true"></div>
             <div class="highlight-grid{if !$highlight_url} highlight-grid--noimg{/if}">
                 {if $highlight_url}
@@ -158,13 +158,13 @@
         </div>
     </section>
 
-    {* ---------- Speisekarte ---------- *}
-    <section id="speisekarte" class="section">
+    {* ---------- Honigsorten ---------- *}
+    <section id="honige" class="section">
         <div class="container narrow">
-            <h2 class="section-title">Speisekarte</h2>
+            <h2 class="section-title">{$site.menu_title|default:'Unsere Honige'}</h2>
             <div class="ornament" aria-hidden="true"></div>
             {if $menu}
-                <div class="menu-tabs" role="tablist">
+                <div class="menu-tabs" role="tablist"{if $menu|count < 2 && !$highlight_menu} hidden{/if}>
                     {if $highlight_menu}
                         <a class="menu-tab-link" href="#highlight-karte" title="Zu den Highlights weiter oben">Highlights <span aria-hidden="true">↑</span></a>
                     {/if}
@@ -194,7 +194,7 @@
                     </details>
                 {/if}
             {else}
-                <p class="center">Unsere Speisekarte wird gerade überarbeitet.</p>
+                <p class="center">Unser Honigangebot wird gerade aktualisiert.</p>
             {/if}
         </div>
     </section>
@@ -202,11 +202,14 @@
     {* ---------- Kontakt ---------- *}
     <section id="kontakt" class="section section--alt">
         <div class="container">
-            <h2 class="section-title">{$site.contact_title|default:'Kontakt & Reservierung'}</h2>
+            <h2 class="section-title">{$site.contact_title|default:'Kontakt & Bestellung'}</h2>
             <div class="ornament" aria-hidden="true"></div>
             <div class="contact-grid">
                 <div class="contact-info">
-                    <h3>Öffnungszeiten</h3>
+                    {assign var=anyOpen value=false}
+                    {foreach $hours_rows as $r}{if !$r.closed}{assign var=anyOpen value=true}{/if}{/foreach}
+                    <h3>Honigverkauf</h3>
+                    {if $anyOpen}
                     <p class="hours-today{if $hours_today.closed} is-closed{/if}"><span class="dot" aria-hidden="true"></span>{$hours_today.text}</p>
                     <table class="hours-table">
                         {foreach $hours_rows as $r}
@@ -215,10 +218,11 @@
                         </tr>
                         {/foreach}
                     </table>
+                    {/if}
                     {if $site.opening_note|default:''}<p class="hours-note">{$site.opening_note}</p>{/if}
                     {if $hours_upcoming}
                         <div class="hours-exceptions">
-                            <h4>Abweichende Öffnungszeiten</h4>
+                            <h4>Hinweise</h4>
                             <ul>
                                 {foreach $hours_upcoming as $e}
                                 <li><strong>{$e.when}{if $e.title}<span class="muted"> · {$e.title}</span>{/if}</strong><br>{$e.short}</li>
@@ -243,7 +247,7 @@
 
                 <div class="contact-form-wrap">
                     {assign var=isRes value=(($contact.old.type|default:'') == 'reservierung')}
-                    <h3>{$site.form_title|default:'Anfrage & Tischreservierung'}</h3>
+                    <h3>{$site.form_title|default:'Anfrage & Honigbestellung'}</h3>
                     {if $site.form_intro|default:''}<p class="form-intro">{$site.form_intro}</p>{/if}
                     <div class="form-alert{if $contact} is-visible {if $contact.ok}is-success{else}is-error{/if}{/if}" role="status" aria-live="polite">{if $contact}{$contact.message}{/if}</div>
                     <form class="contact-form{if $isRes} is-reservation{/if}" id="contact-form" method="post" action="contact.php" novalidate>
@@ -252,7 +256,7 @@
                             <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
                         </div>
 
-                        <fieldset class="type-switch" id="reservierung">
+                        <fieldset class="type-switch" id="bestellen">
                             <legend>Ihr Anliegen</legend>
                             <label class="type-option">
                                 <input type="radio" name="type" value="anfrage"{if !$isRes} checked{/if}>
@@ -260,37 +264,32 @@
                             </label>
                             <label class="type-option">
                                 <input type="radio" name="type" value="reservierung"{if $isRes} checked{/if}>
-                                <span>Tisch reservieren</span>
+                                <span>Honig bestellen</span>
                             </label>
                         </fieldset>
 
                         <div class="res-fields">
                             <div class="form-row">
                                 <div class="field">
-                                    <label for="cf-date">Datum *</label>
-                                    <input id="cf-date" name="res_date" type="date" min="{$today}" max="{$max_date}" value="{$contact.old.res_date|default:''}">
-                                    <span class="field-error">{$contact.errors.res_date|default:''}</span>
+                                    <label for="cf-area">Lieferart</label>
+                                    <select id="cf-area" name="area">
+                                        {foreach $areas as $key => $area}
+                                            <option value="{$key}"{if ($contact.old.area|default:'abholung') == $key} selected{/if}>{$area[0]}</option>
+                                        {/foreach}
+                                    </select>
+                                    <span class="field-error">{$contact.errors.area|default:''}</span>
                                 </div>
                                 <div class="field">
-                                    <label for="cf-time">Uhrzeit *</label>
-                                    <input id="cf-time" name="res_time" type="time" step="900" value="{$contact.old.res_time|default:''}">
-                                    <span class="field-error">{$contact.errors.res_time|default:''}</span>
+                                    <label for="cf-persons">Anzahl Gläser <span class="opt">(gesamt, optional)</span></label>
+                                    <input id="cf-persons" name="persons" type="number" min="1" max="{$max_persons}" inputmode="numeric" value="{$contact.old.persons|default:''}">
+                                    <span class="field-error">{$contact.errors.persons|default:''}</span>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="field">
-                                    <label for="cf-persons">Anzahl Personen *</label>
-                                    <input id="cf-persons" name="persons" type="number" min="1" max="{$max_persons}" inputmode="numeric" value="{$contact.old.persons|default:''}">
-                                    <span class="field-error">{$contact.errors.persons|default:''}</span>
-                                </div>
-                                <div class="field">
-                                    <label for="cf-area">Gewünschter Bereich</label>
-                                    <select id="cf-area" name="area">
-                                        {foreach $areas as $key => $area}
-                                            <option value="{$key}" data-min="{$area[1]}"{if ($contact.old.area|default:'egal') == $key} selected{/if}>{$area[0]}</option>
-                                        {/foreach}
-                                    </select>
-                                    <span class="field-error">{$contact.errors.area|default:''}</span>
+                                    <label for="cf-date">Wunschtermin für die Abholung <span class="opt">(optional)</span></label>
+                                    <input id="cf-date" name="res_date" type="date" min="{$today}" max="{$max_date}" value="{$contact.old.res_date|default:''}">
+                                    <span class="field-error">{$contact.errors.res_date|default:''}</span>
                                 </div>
                             </div>
                             {if $site.form_res_note|default:''}<p class="res-note">{$site.form_res_note}</p>{/if}
@@ -321,7 +320,7 @@
                             </div>
                         </div>
                         <div class="field">
-                            <label for="cf-message"><span class="msg-only">Nachricht *</span><span class="res-only res-label">Anmerkungen</span> <span class="res-only">(optional, z. B. Kinderstuhl, Anlass, Allergien)</span></label>
+                            <label for="cf-message"><span class="msg-only">Nachricht *</span><span class="res-only res-label">Ihre Bestellung *</span> <span class="res-only">(Sorten, Glasgröße und Anzahl)</span></label>
                             <textarea id="cf-message" name="message" rows="5" maxlength="5000">{$contact.old.message|default:''}</textarea>
                             <span class="field-error">{$contact.errors.message|default:''}</span>
                         </div>
@@ -330,7 +329,7 @@
                                 {$site.form_consent|default:'Ich stimme zu, dass meine Angaben zur Bearbeitung meiner Anfrage gespeichert und verarbeitet werden.'} *</label>
                             <span class="field-error">{$contact.errors.privacy|default:''}</span>
                         </div>
-                        <button type="submit" class="btn btn-primary"><span class="msg-only">Nachricht senden</span><span class="res-only">Reservierung anfragen</span></button>
+                        <button type="submit" class="btn btn-primary"><span class="msg-only">Nachricht senden</span><span class="res-only">Bestellung anfragen</span></button>
                         <p class="form-hint">* Pflichtfelder.{if $site.form_hint|default:''} {$site.form_hint|with_phone:$site.phone nofilter}{/if}</p>
                     </form>
                 </div>
