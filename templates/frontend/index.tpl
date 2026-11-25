@@ -31,7 +31,7 @@
 </header>
 
 <main>
-    {* ---------- Banner: Bildwechsler, rundes Logo, aktuelle Meldung ---------- *}
+    {* ---------- Banner: Bildwechsler, Logo im rechteckigen Feld, aktuelle Meldung ---------- *}
     <section id="start" class="hero{if $slides} hero--image{/if}"{if $slides|count > 1} aria-roledescription="carousel" aria-label="Bilder"{/if}>
         {if $slides}
         <div class="hero-slides">
