@@ -525,8 +525,8 @@ h1, h2, h3 { font-family: var(--font-serif); font-weight: 600; line-height: 1.2;
     z-index: 60;
     top: 10px;
     left: max(16px, calc((100vw - 1140px) / 2 + 16px));
-    width: 240px;
-    padding: 16px 18px;
+    width: 190px;
+    padding: 13px 14px;
     border-radius: 4px;
     background: var(--paper);
     display: grid; place-items: center;
@@ -593,21 +593,21 @@ h1, h2, h3 { font-family: var(--font-serif); font-weight: 600; line-height: 1.2;
 /* Tablet & Handy */
 @media (max-width: 959px) {
     .hero { padding-top: calc(var(--header-h) + 120px); }
-    .hero-badge { width: 190px; padding: 12px 14px; }
+    .hero-badge { width: 155px; padding: 10px 11px; }
 }
 @media (max-width: 820px) {
     .hero-arrow { display: none; }
 }
 @media (max-width: 560px) {
     .hero { min-height: 100svh; padding: calc(var(--header-h) + 72px) 0 56px; }
-    .hero-badge { top: 8px; left: 12px; width: 140px; padding: 9px 10px;
+    .hero-badge { top: 8px; left: 12px; width: 115px; padding: 7px 8px;
         box-shadow: 0 0 0 3px var(--paper), 0 0 0 5px var(--accent), 0 10px 24px rgba(0,0,0,.45); }
     .hero-badge::after { inset: 6px; }
     .hero-dots { bottom: 16px; }
     .hero-title { font-size: 1.9rem; }
 }
 @media (max-width: 560px) and (max-height: 700px) {
-    .hero-badge { width: 120px; padding: 7px 8px; }
+    .hero-badge { width: 100px; padding: 6px 7px; }
     .hero { padding-top: calc(var(--header-h) + 40px); }
 }
 
