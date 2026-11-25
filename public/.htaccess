@@ -6,11 +6,12 @@ DirectoryIndex index.php
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Unverschlüsselte Aufrufe immer auf https:// umleiten
+    # Umleitung auf https:// – derzeit AUS, damit die Seite auch ohne SSL-Zertifikat läuft.
+    # Sobald ein Zertifikat eingerichtet ist: die Rauten vor den drei Zeilen entfernen.
     # (X-Forwarded-Proto: falls ein vorgeschalteter Proxy die Verschlüsselung übernimmt)
-    RewriteCond %{HTTPS} !=on
-    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
-    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+    # RewriteCond %{HTTPS} !=on
+    # RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
     # Optional: Hauptadresse ohne „www“ auf https://www. umleiten (Domain eintragen und Rauten entfernen)
     # RewriteCond %{HTTP_HOST} ^ihre-domain\.de$ [NC]
